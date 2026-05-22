@@ -1,0 +1,39 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # El bilen hem işletmek üçin
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Repo kodlaryny çekmek
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Python gurnamak
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Gerekli kitaphanalary gurnamak
+      - name: Install dependencies
+        run: |
+          pip install pygame pyinstaller
+
+      # 4. EXE faýly döretmek
+      - name: Build EXE with PyInstaller
+        run: |
+          pyinstaller game.spec
+
+      # 5. Taýýar EXE faýly ýükläp almak üçin saklamak
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KosmosGoragcysy-Windows
+          path: dist/KosmosGoragcysy.exe
+          retention-days: 30
